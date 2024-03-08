@@ -27,7 +27,7 @@ function _pf_u()
     end
 end
 
-function _pd_d()
+function _pf_d()
     for k,pf in pairs(pflames) do
         if pf.power>0 then 
             if pf.spr_i<#pf.sprites+1-pf_anim_speed then

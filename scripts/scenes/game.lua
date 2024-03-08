@@ -18,7 +18,7 @@ function _game_d()
 
     _lvl_d()
     _enemy_d()
-    _pd_d()
+    _pf_d()
     _torch_d()
     _player_d()
     _ui_d()

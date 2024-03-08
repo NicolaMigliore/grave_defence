@@ -34,7 +34,7 @@ function hitbox_collide(_hb1,_hb2)
 end
 
 function log(_text)
-	printh(_text,"tower/log")
+	printh(_text,"grave_defence/log")
 end
 
 --- easing functions ---
