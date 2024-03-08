@@ -8,6 +8,11 @@ function _init()
     _game_i()
     _ui_i()
     _particles_i()
+
+    cartdata("elfamir_gravedefence_1")
+    load_settings()
+    set_menu_controlls()
+    -- snap_ctrl=false
 end
 
 function _update60()
@@ -51,4 +56,22 @@ function _draw()
     --     --mode="level_selectS"
     --     change_mode_level_complete()
     -- end
+end
+
+function load_settings()
+    snap_ctrl = dget(0) == 1
+end
+
+function toggle_snap_ctrl()
+    snap_ctrl = not snap_ctrl
+    dset(0, snap_ctrl and 1 or 0)
+    set_menu_controlls()
+    snap_player_to_grid()
+    return true
+end
+
+function set_menu_controlls()
+    local label = "snap ctrl □"
+    if (snap_ctrl) label = "snap ctrl ■"
+    menuitem(1, label, toggle_snap_ctrl)
 end

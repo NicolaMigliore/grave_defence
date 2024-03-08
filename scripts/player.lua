@@ -3,6 +3,7 @@ function _player_i()
     player_anim_speed=0.05
     last_player_dx=0
     last_player_dy=0
+    movement_time=10
     player={
         x=64,
         y=64,
@@ -13,7 +14,12 @@ function _player_i()
         interact_y=64,
         -- interact_sprites={17,18,19,18},
         interact_sprites={17},
-        interact_spr_i=1
+        interact_spr_i=1,
+        ox=0,
+        oy=0,
+        dx=0,
+        dy=0,
+        movement_cd=0
     }
 end
 
@@ -37,8 +43,13 @@ end
 
 function _player_d()
     --draw player
-    spr(player.sprites[flr(player.spr_i)],player.x,player.y)
-
+    local sprite = player.sprites[flr(player.spr_i)]
+    if snap_ctrl==false then
+        spr(sprite,player.x,player.y)
+    else
+        local px,py = player.x+player.ox, player.y+player.oy
+	    spr(sprite,px,py)
+    end
     -- draw player interaction cursor
     local ic_x = player.interact_x
     local ic_y = player.interact_y
@@ -48,63 +59,112 @@ end
 
 --- move the player based on the given inputs
 function move_player()
-    local dx,dy = 0,0
     local old_x = player.x
     local old_y = player.y
-    if (btn(⬆️)) dy=-1 last_player_dy=dy last_player_dx=0
-    if (btn(⬇️)) dy=1 last_player_dy=dy last_player_dx=0
-    if (btn(➡️)) dx=1 last_player_dx=dx last_player_dy=0
-    if (btn(⬅️)) dx=-1 last_player_dx=dx last_player_dy=0
-    
+    if snap_ctrl==false then
+        local dx,dy = 0,0
+        
+        if (btn(⬆️)) dy=-1 last_player_dy=dy last_player_dx=0
+        if (btn(⬇️)) dy=1 last_player_dy=dy last_player_dx=0
+        if (btn(➡️)) dx=1 last_player_dx=dx last_player_dy=0
+        if (btn(⬅️)) dx=-1 last_player_dx=dx last_player_dy=0
+        
 
-    -- check if moving diagonally
-    if dx*dy != 0 then
-        dx=dx/1.414*player.speed
-        dy=dy/1.414*player.speed
+        -- check if moving diagonally
+        if dx*dy != 0 then
+            dx=dx/1.414*player.speed
+            dy=dy/1.414*player.speed
 
-        --avoid cobblestoning
-        player.x=flr(player.x)+0.5
-        player.y=flr(player.y)+0.5
+            --avoid cobblestoning
+            player.x=flr(player.x)+0.5
+            player.y=flr(player.y)+0.5
+        end
+
+        -- move player horizontally
+        player.x+=dx
+        
+        -- check for collision
+        local player_bbox={
+            player.x+3,            --player coords + offset for bound box of sprite
+            player.y+4,            --player coords + offset for bound box of sprite
+            player.x+5,            --player coords + offset for bound box of sprite
+            player.y+5             --player coords + offset for bound box of sprite
+        }
+
+        local lvl_offset = (selected_lvl-1) * 128
+        if collide(player_bbox)
+        or player.x < 0 + lvl_offset
+        or player.x > 121 + lvl_offset then
+            player.x=old_x
+        end
+
+        -- move player vertically
+        player.y+=dy
+
+        -- check for collision vertically
+        player_bbox={
+            player.x+3,
+            player.y+4,
+            player.x+5,
+            player.y+5 
+        }
+
+        if collide(player_bbox)
+        or player.y < 0
+        or player.y > 110 then
+            player.y=old_y
+        end
+
+        -- update interaction cursor
+        player.interact_x = flr((player.x+4+(8*last_player_dx))/8)*8            --center player sprite + ofset for movement direction
+        player.interact_y = flr((player.y+4+(8*last_player_dy))/8)*8
+    else
+        -- Snap controlls enabled
+        if player.movement_cd==0 then
+            player.dx=0
+            player.dy=0
+            local btn_pressed=nil
+            for i=0,3 do
+                if(btn(i)) btn_pressed=i
+            end
+            if btn_pressed != nil then
+                -- horizontal movement
+                if (btn_pressed==0) player.x-=8 player.dx=-1
+                if (btn_pressed==1) player.x+=8 player.dx=1
+
+                -- vertical movement
+                if (btn_pressed==2) player.y-=8 player.dy=-1
+                if (btn_pressed==3) player.y+=8 player.dy=1
+
+                -- check for collision horizontally
+                local player_bbox={
+                    player.x+3,            --player coords + offset for bound box of sprite
+                    player.y+4,            --player coords + offset for bound box of sprite
+                    player.x+5,            --player coords + offset for bound box of sprite
+                    player.y+5             --player coords + offset for bound box of sprite
+                }
+
+                local lvl_offset = (selected_lvl-1) * 128
+                if collide(player_bbox)
+                or player.x < 0 + lvl_offset
+                or player.x > 121 + lvl_offset
+                or player.y < 0
+                or player.y > 110 then
+                    player.x=old_x
+                    player.y=old_y
+                else
+                    player.movement_cd=movement_time
+                end
+            end
+        else
+            player.movement_cd-=1
+        end
+
+        -- animate transition between snapped locations
+        local perc = easeinoutquad(1-player.movement_cd/movement_time)
+        player.ox = (8-perc*8) * -player.dx
+        player.oy = (8-perc*8) * -player.dy
     end
-
-    -- move player horizontally
-    player.x+=dx
-    
-    -- check for collision
-    local player_bbox={
-        player.x+3,            --player coords + offset for bound box of sprite
-        player.y+4,            --player coords + offset for bound box of sprite
-        player.x+5,            --player coords + offset for bound box of sprite
-        player.y+5             --player coords + offset for bound box of sprite
-    }
-
-    local lvl_offset = (selected_lvl-1) * 128
-    if collide(player_bbox)
-    or player.x < 0 + lvl_offset
-    or player.x > 121 + lvl_offset then
-        player.x=old_x
-    end
-
-    -- move player vertically
-    player.y+=dy
-
-    -- check for collision vertically
-    player_bbox={
-        player.x+3,
-        player.y+4,
-        player.x+5,
-        player.y+5 
-    }
-
-    if collide(player_bbox)
-    or player.y < 0
-    or player.y > 110 then
-        player.y=old_y
-    end
-
-    -- update interaction cursor
-    player.interact_x = flr((player.x+4+(8*last_player_dx))/8)*8            --center player sprite + ofset for movement direction
-    player.interact_y = flr((player.y+4+(8*last_player_dy))/8)*8
 end
 
 -- place torches
@@ -151,5 +211,42 @@ function collide(bounding_box)
         return true
     else
         return false
+    end
+end
+
+--- if the snap controls are activate later, the player
+--      position must be set to the correct coords.
+function snap_player_to_grid()
+    local old_x, old_y = player.x, player.y
+    local lvl_offset = (selected_lvl-1) * 16
+    local found_placement= false
+    
+    
+
+    
+    local offsets = {{0,0},{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{1,1},{1,-1},{-1,1}}
+    local i = 1
+    while i<10 and found_placement==false do
+        -- try new placement
+        -- snap player to the grid
+        player.x = (flr(player.x/8) * 8) + offsets[i][1]*8
+        player.y = (flr(player.y/8) * 8) + offsets[i][2]*8
+
+        local player_bbox = {
+            player.x+3,
+            player.y+4,
+            player.x+5,
+            player.y+5 
+        }
+
+        if collide(player_bbox)
+        or player.x < 0 + lvl_offset
+        or player.x > 121 + lvl_offset
+        or player.y < 0
+        or player.y > 110 then
+            found_placement = false
+        else 
+            found_placement = true
+        end
     end
 end
