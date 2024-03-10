@@ -8,8 +8,6 @@ function _pf_i()
     pflames={}
     
     pf_anim_speed=0.1
-    
-    debug_pf_aura=false
 end
 
 function _pf_u()
@@ -44,11 +42,7 @@ function _pf_d()
             sspr(spr_x,0,7,7,pf.x,pf.y-spr_size/3,spr_size,spr_size)
             -- spr(pf.sprites[flr(pf.spr_i)],pf.x,pf.y)
 
-            if debug_pf_aura then
-                circ(pf.x+4,pf.y+4,pf_aura_r,pf.colors[1])
-                print(pf.power,pf.x,pf.y-6)
-            end
-
+            -- draw link particles
             for t_id in all(pf.ltorches) do
                 local t = get_torch(t_id)
                 draw_link_particles(
@@ -56,6 +50,13 @@ function _pf_d()
                     {t.x*8,t.y*8,8,8},
                     pf.colors[1]
                 )
+            end
+
+            -- draw torch radius
+            if show_auras then
+                for i=1,rnd()+0.5 do
+                    draw_radius_particles(pf.x+4,pf.y+4,pf.colors)
+                end
             end
             pal()
         end
@@ -136,7 +137,18 @@ function draw_link_particles(_hb1,_hb2,_c)
 	local hb2_x,hb2_y,hb2_w,hb2_h = unpack(_hb2)
     local p1_x,p1_y = flr(hb1_x+hb1_w/2),flr(hb1_y+hb1_h/2)
     local p2_x,p2_y = flr(hb2_x+hb2_w/2),flr(hb2_y+hb2_h/2)
-    if (debug_pf_aura) line(p1_x,p1_y,p2_x,p2_y,_c)
+end
+
+function draw_radius_particles(_center_x,_center_y,_colors)
+    local angle = rnd()
+    local x = _center_x + pf_aura_r * cos(angle)
+	local y = _center_y + pf_aura_r * sin(angle)
+    -- check if tile is clear
+    local tile_x, tile_y = flr(x/8), flr(y/8)
+    tile_can_draw_particles = fget(mget(tile_x,tile_y),1)
+    local ui_min_y = 118
+
+    if (tile_can_draw_particles and y<ui_min_y) spawn_static_pixel(x,y,_colors,rnd(120))
 end
 
 --spawn initial level flames

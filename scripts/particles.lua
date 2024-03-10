@@ -93,7 +93,13 @@ function spawntrail(_x,_y,_colors)
 	)
 end
 
---spawn fmoke
+-- spawn static pixel
+function spawn_static_pixel(_x,_y,_colors,_max_age)
+    _max_age = _max_age or rnd(20)+10
+    add_particle(_x,_y,0,0,0,_max_age,_colors,1)
+end
+
+--spawn smoke
 function spawn_smoke(_x,_y,_colors)
 	for i=0, 2+rnd(4) do
 		local angle = rnd()

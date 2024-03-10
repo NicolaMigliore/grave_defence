@@ -21,6 +21,7 @@ function _player_i()
         dy=0,
         movement_cd=0
     }
+    show_auras = false
 end
 
 function _player_u()
@@ -182,7 +183,7 @@ function player_controll()
         if tile==0 and available_torches>0 and tile_in_bounds then
             add_torch(tile_x,tile_y,1,nil)
             available_torches-=1
-            spawn_smoke(player.x+4,player.y+4,{8,9,19})
+            spawn_smoke(player.x+4,player.y+4,{8,9,10})
         elseif tile == 1 or tile == 2 then
             del_torch(tile_x,tile_y)
             available_torches+=1
@@ -193,6 +194,8 @@ function player_controll()
             sfx(3)
         end
     end
+    -- toggle flame auras
+    if (btnp(🅾️)) show_auras = not show_auras
 end
 
 function collide(bounding_box)
@@ -220,10 +223,6 @@ function snap_player_to_grid()
     local old_x, old_y = player.x, player.y
     local lvl_offset = (selected_lvl-1) * 16
     local found_placement= false
-    
-    
-
-    
     local offsets = {{0,0},{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{1,1},{1,-1},{-1,1}}
     local i = 1
     while i<10 and found_placement==false do
