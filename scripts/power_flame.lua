@@ -34,19 +34,30 @@ function _pf_d()
                 pf.spr_i=1
             end
 
+            -- set flame color
             pal(9,pf.colors[1])
             pal(10,pf.colors[2])
             pal(7,pf.colors[3])
-            local spr_x=48+(flr(pf.spr_i)*8)
-            local spr_size=8/pf.max_power*pf.power
-            sspr(spr_x,0,7,7,pf.x,pf.y-spr_size/3,spr_size,spr_size)
-            -- spr(pf.sprites[flr(pf.spr_i)],pf.x,pf.y)
+
+            local power_perc = pf.power/pf.max_power
+            local spr_offset
+            if power_perc > 0.66 then
+                spr_offset = 138 
+            elseif power_perc > 0.33 then
+                spr_offset = 154
+            else
+                spr_offset = 170
+            end 
+            -- override colors for low flames
+            if (power_perc <= 0.40) pal(pf.colors[1],blink_color2.color) pal(pf.colors[2],blink_color2.color) pal(pf.colors[3],blink_color2.color)
+
+            spr(spr_offset + flr(pf.spr_i),pf.x,pf.y-4)
 
             -- draw link particles
             for t_id in all(pf.ltorches) do
                 local t = get_torch(t_id)
                 draw_link_particles(
-                    {pf.x,pf.y,spr_size,spr_size},
+                    {pf.x,pf.y,8,8},
                     {t.x*8,t.y*8,8,8},
                     pf.colors[1]
                 )
@@ -115,15 +126,10 @@ function del_flame(_pf)
     for t_id in all(_pf.ltorches) do
         local t = get_torch(t_id)
         t.pf_id = 0
-        --torches[t_id].pf_id=0
     end
-
-    --delete power flame
-    --del(pflames, _pf)
 end
 
 function consume_flame(_id,_power_delta)
-    -- local pf = pflames[tostr(_id)]
     local pf = get_pflame(_id)
     if (pf==nil) return
 
@@ -158,13 +164,12 @@ function spawn_flames(_ox)
         for j=0,15 do 
             local map_tile = mget(i,j)
             if map_tile>11 and map_tile<16 then
-                local power=rnd({1,2})
                 local kind=1
                 local theme={9,10,7}--rnd(flame_themes)
                 if(map_tile==13) kind = 2
                 if(map_tile==14) kind = 3
                 if(map_tile==15) kind = rnd({1,2,3})
-                add_pflame(i*8,j*8,power,kind)
+                add_pflame(i*8,j*8,2,kind)
             end
         end
     end
