@@ -74,4 +74,5 @@ end
 function change_mode_main_menu()
     mode="start"
     music(3,1000)
+    configure_menu()
 end

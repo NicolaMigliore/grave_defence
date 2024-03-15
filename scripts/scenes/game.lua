@@ -23,3 +23,11 @@ function _game_d()
     _player_d()
     _ui_d()
 end
+
+function change_mode_game()
+    mode="game"
+    camera_x=(selected_lvl-1)*128
+    camera(camera_x)
+    load_lvl(selected_lvl)
+    configure_menu()
+end

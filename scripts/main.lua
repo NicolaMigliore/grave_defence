@@ -11,7 +11,7 @@ function _init()
 
     cartdata("elfamir_gravedefence_1")
     load_settings()
-    set_menu_controlls()
+    configure_menu()
     -- snap_ctrl=false
 end
 
@@ -71,7 +71,24 @@ function toggle_snap_ctrl()
 end
 
 function set_menu_controlls()
-    local label = "snap ctrl □"
-    if (snap_ctrl) label = "snap ctrl ■"
+    local label = "웃 snap ctrl □"
+    if (snap_ctrl) label = "웃 snap ctrl ■"
     menuitem(1, label, toggle_snap_ctrl)
+end
+
+function configure_menu()
+    -- clear menu items
+    foreach({1,2,3},menuitem)
+
+    -- controlls menu
+    set_menu_controlls()  
+
+    if mode != "start" and mode != "level_select" then
+        -- reset level
+        menuitem(2, "⧗ reset level", change_mode_game)
+        -- return to level select
+        menuitem(3, "⌂ select level", change_mode_level_select)
+    end
+
+    
 end
