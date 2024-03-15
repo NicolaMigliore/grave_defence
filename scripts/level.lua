@@ -28,7 +28,7 @@ function path_to_nodes(_path)
     local nodes={}
     for p in all(_path) do
         local coords = split(p)
-        add(nodes,{coords[1]*8,coords[2]*8})
+        add(nodes,{(coords[1]*8)+4,(coords[2]*8)+2})
     end
     return nodes
 end
@@ -52,8 +52,8 @@ function load_lvl(_cur_lvl)
         souls=10
         available_torches=4
         -- setup nodes
-        path_1 = path_to_nodes({"0,1","1,1","2,1","3,1","3,2","3,3","3,4","4,4","5,4","6,4","6,5","6,6","6,7","6,8","6,9","6,10","6,11","6,13","5,13","4,13","3,13","2,13","2,12","2,11"})
-        path_2 = path_to_nodes({"0,1","1,1","2,1","3,1","3,2","3,3","3,4","4,4","5,4","6,4","7,4","8,4","9,4","10,4","11,4","12,4","13,4","14,4","14,5","14,6","14,7","14,8","14,9","14,10","14,11","14,12","14,13","13,13","12,13","11,13","10,13","9,13","8,13","7,13","6,13","5,13","4,13","3,13","2,13","2,12","2,11"})
+        path_1 = path_to_nodes({"0,1","3,1","3,4","6,4","6,8","6,13","2,13","1,11"})
+        path_2 = path_to_nodes({"0,1","3,1","3,4","6,4","14,4","14,8","14,13","6,13","2,13","1,11"})        
         waves = {
             { kind=1, nbr=10, cd=60, cur_enemy_cd=60, enemy_cd=120, nodes=path_1 },
             { kind=1, nbr=7, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
@@ -63,9 +63,9 @@ function load_lvl(_cur_lvl)
         souls=10
         available_torches=5
         -- setup nodes
-        path_1 = path_to_nodes({"29,15","29,14","29,13","29,12","29,11","28,11","27,11","26,11","25,11","24,11","23,11","22,11","21,11","20,11","19,11","18,11","17,11","17,10","17,9","17,8","17,7","17,6","17,5","18,4","18,3"})
-        path_2 = path_to_nodes({"29,15","29,14","29,13","29,12","29,11","29,10","29,9","29,8","29,7","29,6","29,5","29,4","29,3","29,2","28,2","27,2","26,2","25,2","24,2","23,2", "23,3","23,4","23,5","22,5","21,5","20,5","19,5","18,5","18,4","18,3"})
-        path_3 = path_to_nodes({"29,15","29,14","29,13","29,12","29,11","28,11","27,11","26,11","25,11","24,11","23,11","23,10","23,9","23,8","23,7","23,6","23,5","22,5","21,5","20,5","19,5","18,5","18,3"})
+        path_1 = path_to_nodes({"29,15","29,11","23,11","17,11","17,3","18,3"})
+        path_2 = path_to_nodes({"29,15","29,6","29,2","23,2","23,5","18,5","18,3"})
+        path_3 = path_to_nodes({"29,15","29,11","23,11","23,5","18,5","18,3"})
         waves = {
             { kind=1, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 }, 
             { kind=2, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=360, nodes=path_2 },
@@ -78,10 +78,10 @@ function load_lvl(_cur_lvl)
         souls=5
         available_torches=5
         -- setup nodes
-        path_1 = path_to_nodes({"32,11","33,11","34,11","35,11","36,11","37,11","38,11","39,11","39,10","39,9","39,8","39,7","39,6","39,5","39,4"})
-        path_2 = path_to_nodes({"47,11","46,11","45,11","44,11","43,11","42,11","41,11","40,11","40,10","40,9","40,8","40,7","40,6","40,5","40,4"})
-        path_3 = path_to_nodes({"32,1","33,1","34,1","35,1","35,2","35,3","35,4","35,5","36,5","37,5","38,5","39,5","40,4"})
-        path_4 = path_to_nodes({"47,1","46,1","45,1","44,1","44,2","44,3","44,4","44,5","43,5","42,5","41,5","40,5","39,4"})
+        path_1 = path_to_nodes({"31,11","39,11","40,8","39,4"})
+        path_2 = path_to_nodes({"48,11","40,11","39,8","40,4"})
+        path_3 = path_to_nodes({"31,1","35,1","35,5","39,5","40,4"})
+        path_4 = path_to_nodes({"48,1","44,1","44,5","40,5","39,4"})
         waves = {
             { kind=1, nbr=7, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
             { kind=1, nbr=7, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
@@ -92,6 +92,41 @@ function load_lvl(_cur_lvl)
             { kind=2, nbr=3, cd=600, cur_enemy_cd=0, enemy_cd=120, nodes=path_4 },
             { kind=1, nbr=7, cd=600, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
             { kind=1, nbr=7, cd=120, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 }
+        }
+    elseif _cur_lvl==4 then
+        souls=10
+        available_torches=5
+        -- setup nodes
+        path_1 = path_to_nodes({"47,12","53,12","59,12","59,5","61,5","62,3"})
+        path_2 = path_to_nodes({"47,2","53,2","53,12","59,12","59,5","61,5","62,3"})
+        waves = {
+            { kind=1, nbr=10, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 }, 
+            { kind=1, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
+            { kind=1, nbr=10, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
+            { kind=1, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
+            { kind=1, nbr=10, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
+            { kind=2, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=360, nodes=path_1 }
+        }
+    elseif _cur_lvl==5 then
+        souls=5
+        available_torches=5
+        -- setup nodes
+        path_1 = path_to_nodes({"80,2","77,2","77,4","69,4","69,8","77,8","77,12","71,12","66,12","65,10"})
+        path_2 = path_to_nodes({"63,1","69,1","69,4","69,8","77,8","77,12","71,12","66,12","65,10"})
+        path_3 = path_to_nodes({"80,12","71,12","66,12","65,10"})
+        waves = {
+            { kind=2, nbr=2, cd=60, cur_enemy_cd=0, enemy_cd=360, nodes=path_1 },
+            { kind=1, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
+            { kind=2, nbr=2, cd=60, cur_enemy_cd=0, enemy_cd=360, nodes=path_2 },
+            { kind=1, nbr=5, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
+
+            { kind=1, nbr=10, cd=60, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
+            { kind=1, nbr=10, cd=0, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
+            { kind=3, nbr=2, cd=60, cur_enemy_cd=0, enemy_cd=360, nodes=path_2 },
+            { kind=3, nbr=2, cd=0, cur_enemy_cd=0, enemy_cd=360, nodes=path_1 },
+            { kind=1, nbr=5, cd=0, cur_enemy_cd=0, enemy_cd=120, nodes=path_1 },
+            { kind=1, nbr=5, cd=0, cur_enemy_cd=0, enemy_cd=120, nodes=path_2 },
+            { kind=3, nbr=1, cd=0, cur_enemy_cd=0, enemy_cd=360, nodes=path_3 }
         }
     end
 

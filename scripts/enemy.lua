@@ -41,7 +41,7 @@ end
 
 function add_enemy(_x,_y,_kind,_path)
     _kind= _kind or 1
-    local speed = 0.04
+    local speed = 0.18
     local hp=40
     local sprite_size = 1
     local sprites={64,65,66,65}
@@ -50,10 +50,10 @@ function add_enemy(_x,_y,_kind,_path)
         hp = 80
         sprite_size = 2
         sprites = {96,98,100,98}
-        speed = 0.02
+        speed = 0.095
     elseif _kind==3 then 
-        hp = 100
-        speed = 0.02
+        hp = 120
+        speed = 0.1
         sprite_size = 2
         sprites = {67,69,71,69}
     end
@@ -95,10 +95,11 @@ end
 
 function move_enemy(_e)
     local target = _e.path[1]
-    local dx = _e.x - target[1]
-    local dy = _e.y - target[2]
+    local dist_x = target[1] - _e.x
+    local dist_y = target[2] - _e.y
 
-    if abs(dx) < 1 and abs(dy) < 1 then
+    -- if target has been reached, look for next one or sub souls
+    if abs(dist_x) < 1 and abs(dist_y) < 1 then
         deli(_e.path,1)
         if #_e.path > 0 then
             move_enemy(_e)
@@ -108,8 +109,16 @@ function move_enemy(_e)
         end
     end
 
-    _e.x -= dx * _e.speed
-    _e.y -= dy * _e.speed
+    -- override to avoid cobblestoning
+    if (abs(dist_x) < 0.5) dist_x=0
+    if (abs(dist_y) < 0.5) dist_y=0
+
+    -- move the enemy
+    local dx = sgn(dist_x)
+    local dy = sgn(dist_y)
+
+    _e.x += dx * _e.speed
+    _e.y += dy * _e.speed
 end
 
 function hit_enemy(_e,_damage)
