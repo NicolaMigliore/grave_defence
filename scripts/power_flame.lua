@@ -40,6 +40,9 @@ function _pf_d()
             pal(7,pf.colors[3])
 
             local power_perc = pf.power/pf.max_power
+            -- override colors for low flames
+            if (power_perc <= 0.40) pal(9,blink_color2.color) pal(10,blink_color2.color) pal(7,blink_color2.color)
+
             local spr_offset
             if power_perc > 0.66 then
                 spr_offset = 138 
@@ -48,9 +51,7 @@ function _pf_d()
             else
                 spr_offset = 170
             end 
-            -- override colors for low flames
-            if (power_perc <= 0.40) pal(pf.colors[1],blink_color2.color) pal(pf.colors[2],blink_color2.color) pal(pf.colors[3],blink_color2.color)
-
+            
             spr(spr_offset + flr(pf.spr_i),pf.x,pf.y-4)
 
             -- draw link particles
