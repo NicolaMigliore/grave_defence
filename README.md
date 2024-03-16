@@ -15,6 +15,16 @@ However, Flames will recharge over time unless fully extinguished.
 
 Torches can be relocated; the mausoleum must be protected and you will need to move around the map to do so!
 
+![gameplay example](./resources/grave_defence_0.gif)
+
+## Different Power Flames
+Power flames come in three types represented by their colors:
+- Yellow flame: basic flame, the most balanced option.
+- Blue flame: weak flame, can power more torches than yellow flames.
+- Red flame: strongest flame, will cause the most damage, but is drained faster than other flames.
+
+![different flame types showcase](<./resources/grave_defence p8_2.gif>)
+
 # About
 I have recently been getting into game development and learning to work with PICO-8.
 After the mandatory [Lazy Devs](https://www.youtube.com/@LazyDevs) tutorial I decided to challenge myself to develop a complete game in two weeks, that would include functioning mechanics, art and some basic music. Grave Defence is the end result!
